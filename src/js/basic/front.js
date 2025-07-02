@@ -182,45 +182,50 @@ function runAnkiTemplate() {
      2.3.1. HTML Generators for Players
     */
 
-    // Generates the HTML structure for a custom audio player.
-    function getCustomAudioPlayerHTML(src) {
-        return `<div class="custom-audio-player">
- <audio class="custom-audio-element" src="${src}" preload="metadata"></audio>
- <button class="play-pause-btn">
- <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98c-.67-.43-1.54.05-1.54.84z"></path></svg>
- <svg class="pause-icon" style="display: none;" viewBox="0 0 24 24" fill="currentColor"><path d="M7 19c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1v14zm7-14v14c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1h-2c-.55 0-1 .45-1 1z"></path></svg>
- </button>
- <div class="main-controls-wrapper">
- <div class="progress-time-container">
- <div class="progress-bar-container">
- <div class="loop-range-indicator"></div>
- <div class="mark-indicator mark-a-indicator"></div>
- <div class="mark-indicator mark-b-indicator"></div>
- <div class="progress-bar-fill"></div>
- </div>
- <div class="time-display">
- <span class="current-time">0:00</span> / <span class="duration">0:00</span>
- </div>
- </div>
- <div class="secondary-controls">
- <div class="speed-controls">
- <button class="control-btn speed-down-btn" title="Decrease speed"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"></path></svg></button>
- <span class="speed-display">1.0x</span>
- <button class="control-btn speed-up-btn" title="Increase speed"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"></path></svg></button>
- </div>
- <div class="loop-controls">
- <button class="control-btn mark-a-btn" title="Mark start point (A)">A</button>
- <button class="control-btn mark-b-btn" title="Mark end point (B)">B</button>
- <button class="control-btn loop-btn" title="Toggle A-B loop" disabled><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"></path></svg></button>
- </div>
- <div class="volume-container">
- <button class="volume-btn"><svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71V6.41c0-.89-1.08-1.34-1.71-.71L7 9H4c-.55 0-1 .45-1 1zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"></path></svg><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 10v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71V6.41c0-.89-1.08-1.34-1.71-.71L7 9H4c-.55 0-1 .45-1 1z"/></svg></button>
- <div class="volume-slider-container"><div class="volume-slider-fill"></div></div>
- </div>
- </div>
- </div>
- </div>`;
-    }
+// Generates the HTML structure for a custom audio player.
+function getCustomAudioPlayerHTML(src) {
+    return `<div class="custom-audio-player">
+        <audio class="custom-audio-element" src="${src}" preload="metadata"></audio>
+        <button class="play-pause-btn">
+            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98c-.67-.43-1.54.05-1.54.84z"></path></svg>
+            <svg class="pause-icon" style="display: none;" viewBox="0 0 24 24" fill="currentColor"><path d="M7 19c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1H8c-.55 0-1 .45-1 1v14zm7-14v14c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1h-2c-.55 0-1 .45-1 1z"></path></svg>
+        </button>
+        <div class="main-controls-wrapper">
+            <div class="progress-time-container">
+                <div class="progress-bar-container">
+                    <div class="loop-range-indicator"></div>
+                    <div class="mark-indicator mark-a-indicator"></div>
+                    <div class="mark-indicator mark-b-indicator"></div>
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <div class="time-display">
+                    <span class="current-time">0:00</span> / <span class="duration">0:00</span>
+                </div>
+            </div>
+            <div class="secondary-controls">
+                <div class="speed-controls">
+                    <button class="control-btn speed-down-btn" title="Decrease speed"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"></path></svg></button>
+                    <span class="speed-display">1.0x</span>
+                    <button class="control-btn speed-up-btn" title="Increase speed"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"></path></svg></button>
+                </div>
+                <div class="loop-controls">
+                    <button class="control-btn mark-a-btn" title="Mark start point (A)">A</button>
+                    <button class="control-btn mark-b-btn" title="Mark end point (B)">B</button>
+                    <button class="control-btn loop-btn" title="Activate/deactivate A-B loop" disabled><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"></path></svg></button>
+                </div>
+                <div class="volume-container">
+                    <button class="volume-btn">
+                        <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71V6.41c0-.89-1.08-1.34-1.71-.71L7 9H4c-.55 0-1 .45-1 1zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"></path></svg>
+                        <svg class="mute-icon" style="display:none;" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 10v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71V6.41c0-.89-1.08-1.34-1.71-.71L7 9H4c-.55 0-1 .45-1 1z"/></svg>
+                    </button>
+                    <div class="volume-slider-container">
+                        <div class="volume-slider-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
 
     // Generates the HTML structure for a custom video player.
     function getCustomVideoPlayerHTML(src) {
