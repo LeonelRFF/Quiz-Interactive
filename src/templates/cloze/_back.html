@@ -1,0 +1,47 @@
+<!--
+    Template Shell for the Back of the 'Cloze' Card Type.
+    This file defines the structure for displaying the answer and feedback.
+-->
+
+<!-- 1. Anki Validator (ESSENTIAL). Hidden but necessary. -->
+<div style="display: none;">
+    {{cloze:Question}}
+    {{cloze:Correct_Answer}}
+    {{cloze:Options}}
+</div>
+
+<!-- 2. Main HTML structure, including animation overlay. -->
+<div id="card-exit-overlay"></div>
+
+<div class="main-quiz-container">
+    <!-- Timer and results container, handled by the script. -->
+    <div class="timer-bar-container"><div class="timer-bar-fill" id="timer-bar-back"></div></div>
+    <div id="quiz-result-container" class="quiz-content"></div>
+
+    <!-- Anki's standard review buttons. -->
+    <div id="anki-buttons" class="anki-buttons-container">
+        <button class="anki-button anki-button-again" data-ease="1">⟲</button>
+        <button class="anki-button anki-button-hard" data-ease="2">!</button>
+        <button class="anki-button anki-button-good" data-ease="3">✓</button>
+    </div>
+</div>
+
+<!-- 3. Hidden data container for the back script. -->
+<div id="anki-data-container-back" style="display:none">
+    <div id="anki-field-pregunta-back">{{Question}}</div>
+    <div id="anki-field-opciones-back">{{Options}}</div>
+    <div id="anki-field-respuesta_correcta-back">{{Correct_Answer}}</div>
+    <div id="anki-field-explicacion-back">{{Explanation}}</div>
+    <div id="anki-field-pistas-back">{{Hints}}</div>
+    <div id="anki-field-tags-back">{{Tags}}</div>
+</div>
+
+<!-- Build-time Placeholder for CSS -->
+<style>
+    <!-- %%STYLES%% -->
+</style>
+
+<!-- Build-time Placeholder for JavaScript -->
+<script>
+    <!-- %%SCRIPT%% -->
+</script>

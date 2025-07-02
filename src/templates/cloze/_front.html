@@ -1,0 +1,45 @@
+<!--
+    Template Shell for the Front of the 'Cloze' Card Type.
+    This file defines the core HTML structure, including the essential hidden
+    div for Anki's cloze processing.
+-->
+
+<!-- 1. Anki Validator (ESSENTIAL). Hidden but necessary for Cloze processing. -->
+<div style="display: none;">
+    {{cloze:Question}}
+    {{cloze:Correct_Answer}}
+    {{cloze:Options}}
+</div>
+
+<!-- 2. The main visible HTML structure of your card. -->
+<div class="main-quiz-container">
+    <!-- Timer Bar -->
+    <div class="timer-bar-container">
+        <div class="timer-bar-fill" id="timer-bar"></div>
+    </div>
+
+    <!-- Container where the script will dynamically inject the quiz content. -->
+    <div id="quiz-container-anki-front" class="quiz-content">
+        <!-- The script will fill this. Leave empty. -->
+    </div>
+
+    <!-- 3. Hidden data container for the script to access field content. -->
+    <div id="anki-data-container" style="display:none">
+        <div id="anki-field-pregunta">{{Question}}</div>
+        <div id="anki-field-opciones">{{Options}}</div>
+        <div id="anki-field-respuesta_correcta">{{Correct_Answer}}</div>
+        <div id="anki-field-explicacion">{{Explanation}}</div>
+        <div id="anki-field-pistas">{{Hints}}</div>
+        <div id="anki-field-tags">{{Tags}}</div>
+    </div>
+</div>
+
+<!-- Build-time Placeholder for CSS -->
+<style>
+    <!-- %%STYLES%% -->
+</style>
+
+<!-- Build-time Placeholder for JavaScript -->
+<script id="anki-card-script">
+    <!-- %%SCRIPT%% -->
+</script>

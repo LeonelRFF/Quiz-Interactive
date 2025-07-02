@@ -1,0 +1,51 @@
+<!--
+    Template Shell for the Back of the 'Basic' Card Type.
+    This file defines the core HTML structure for the answer review.
+    The build script will inject styles and scripts into the placeholders below.
+-->
+<div class="main-quiz-container">
+    <!-- Back Timer Section -->
+    <div class="timer-bar-container">
+        <div class="timer-bar-fill" id="timer-bar-back"></div>
+    </div>
+
+    <!-- Overlay Layer for Exit Animations -->
+    <div id="card-exit-overlay"></div>
+
+    <!-- Main Quiz Container on the Back -->
+    <div id="quiz-container-anki-back"></div>
+
+    <!-- Visual Progress Indicator -->
+    <div class="progress-indicator">
+        <div class="progress-segment correct" id="progress-correct"></div>
+        <div class="progress-segment incorrect" id="progress-incorrect"></div>
+        <div class="progress-segment idk" id="progress-idk"></div>
+    </div>
+
+    <!-- Hidden Data Container for Anki Fields -->
+    <div id="anki-data-container" style="display:none">
+        <div id="anki-field-pregunta">{{Question}}</div>
+        <div id="anki-field-opciones">{{Options}}</div>
+        <div id="anki-field-respuesta_correcta">{{Correct_Answer}}</div>
+        <div id="anki-field-explicacion">{{Explanation}}</div>
+        <div id="anki-field-pistas">{{Hints}}</div>
+        <div id="anki-field-tags">{{Tags}}</div>
+    </div>
+    
+    <!-- Anki's Review Buttons Container -->
+    <div id="anki-buttons" class="anki-buttons-container">
+        <button class="anki-button anki-button-again" data-ease="1">⟲</button>
+        <button class="anki-button anki-button-hard" data-ease="2">!</button>
+        <button class="anki-button anki-button-good" data-ease="3">✓</button>
+    </div>
+</div>
+
+<!-- Build-time Placeholder for CSS -->
+<style>
+    <!-- %%STYLES%% -->
+</style>
+
+<!-- Build-time Placeholder for JavaScript -->
+<script>
+    <!-- %%SCRIPT%% -->
+</script>

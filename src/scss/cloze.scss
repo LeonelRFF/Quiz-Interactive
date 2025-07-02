@@ -1,0 +1,2229 @@
+
+/*
+Copyright (C) 2025 Leonel Rodriguez leonelrodriguezfl@gmail.com
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+ <https://www.gnu.org/licenses/>.
+*/
+
+
+/*
+================================================================================
+ SECTION 1: BASE STYLES AND GLOBAL VARIABLES (ROOT)
+================================================================================
+ Defines general properties for the document body and CSS variables
+ for centralized management of colors, fonts, shadows, and dimensions,
+ facilitating consistency and theming (e.g. Night Mode).
+--------------------------------------------------------------------------------
+*/
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Styles for the main Anki card container (the 'card' class is added by Anki). */
+.card {
+    font-family: 'Inter', -apple-system, BlinkMacMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #F8FAFC; /* Default light background color. */
+    color: #1E293B;           /* Default dark text color. */
+    line-height: 1.6;
+    min-height: 100vh;        /* Ensures the background covers the entire visible height. */
+    box-sizing: border-box;   /* Includes padding and border in the element's width/height. */
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+/* Night Mode: Overrides colors for a dark interface. */
+.nightMode .card, .night_mode .card {
+    background-color: #1A202C;
+    color: #E2E8F0;
+}
+
+/*
+ CSS Variables (Custom Properties) for centralized style management.
+ This allows for easy modification and theming of the interface.
+*/
+:root {
+    --primary-color: #3B82F6;         /* Bright blue for interactive/highlighted elements. */
+    --primary-color-light: #60A5FA;   /* Lighter version of the primary color. */
+    --secondary-color: #10B981;       /* Green for success indicators. */
+    --danger-color: #EF4444;          /* Red for errors/risk actions. */
+    --warning-color: #F59E0B;         /* Orange for warnings/attention. */
+    --info-color: #3B82F6;            /* Blue for general information. */
+    --neutral-color: #6B7280;         /* Grey for neutral elements. */
+    --neutral-color-light: #9CA3AF;   /* Lighter version of neutral grey. */
+
+    /* Colors for light theme. */
+    --light-bg: #F8FAFC;
+    --light-card-bg: #FFFFFF;
+    --light-text: #1E293B;
+    --light-text-muted: #6B7280;
+    --border-light: #E5E7EB;
+
+    /* Colors for dark theme (used in .nightMode). */
+    --dark-bg: #1A202C;
+    --dark-card-bg: #2D3748;
+    --dark-text: #E2E8F0;
+    --dark-text-muted: #A0AEC0;
+    --border-dark: #4A5568;
+    --dark-neutral-color: #4B5563;
+
+    --font-family: 'Inter', sans-serif; /* Main text font. */
+    --border-radius: 10px;           /* General border-radius for small elements. */
+    --card-border-radius: 16px;      /* Border-radius for main cards. */
+    --shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);       /* Shadow for light mode. */
+    --shadow-dark: 0 8px 25px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(0, 0, 0, 0.15); /* Shadow for dark mode. */
+}
+
+/*
+================================================================================
+ SECTION 2: GENERAL STRUCTURE AND BASIC LAYOUT
+================================================================================
+ Defines the design and appearance of the main card containers,
+ such as the quiz wrapper and the basic card style.
+--------------------------------------------------------------------------------
+*/
+
+/* Main quiz container, centered and with limited width. */
+.main-quiz-container {
+    display: inline-block; /* Allows centering with text-align: center on the body. */
+    max-width: 800px;
+    width: 100%;
+    padding: 2.5rem 1rem 100px 1rem; /* Space for fixed timer bar and Anki buttons. */
+    box-sizing: border-box; /* Includes padding in the width. */
+    text-align: left;       /* Resets text alignment within the container. */
+    position: relative;     /* For positioning fixed elements within. */
+}
+
+/* General style for "card" type content blocks. */
+.styled-card {
+    background: var(--light-card-bg);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden; /* Ensures inner contents do not overflow if they have rounded borders. */
+    width: 100%;
+    padding: 2rem;
+    margin-top: 1rem;
+    box-sizing: border-box;
+}
+
+/* Card styles for night mode. */
+.nightMode .styled-card, .night_mode .styled-card {
+    background: var(--dark-card-bg);
+    box-shadow: var(--shadow-dark);
+    color: var(--dark-text);
+}
+
+/* Question card header. */
+.question-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    min-height: 2em; /* Maintains a minimum height for the header. */
+    flex-wrap: wrap; /* Allows tags to wrap on small screens. */
+    gap: 0.75rem;    /* Space between header elements. */
+}
+
+/* Style for the main question text or context. */
+.question-card-item > p:first-of-type, .question-text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+}
+
+/* Containers for answer options. */
+#options-box, #options-box-back {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Space between each option. */
+}
+
+/* Removes bottom margin for option containers if there are no individual explanations. */
+.option-container {
+    margin-bottom: 0;
+}
+.styled-card:not(.has-individual-explanations) .option-container {
+    margin-bottom: 0.75rem;
+}
+
+/* General style for an answer option label. */
+.option-label {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease-out; /* Smooth transition for hover and selection. */
+    cursor: pointer;
+    background-color: var(--light-card-bg);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Night Mode for option labels. */
+.nightMode .option-label, .night_mode .option-label {
+    border-color: var(--border-dark);
+    background-color: var(--dark-card-bg);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Hover effect for option labels (excluding disabled or evaluated ones). */
+.option-label:hover:not(.disabled-option):not(.evaluated) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    border-color: var(--primary-color-light);
+}
+
+/* Night Mode: hover effect for option labels. */
+.nightMode .option-label:hover:not(.disabled-option), .night_mode .option-label:hover:not(.disabled-option) {
+    border-color: var(--primary-color);
+}
+
+/* Style for the user-selected option. */
+.option-label.user-selected {
+    border-color: var(--primary-color) !important;       /* Primary border color. */
+    background-color: rgba(59, 130, 246, 0.1) !important; /* Semi-transparent background. */
+}
+
+/* Night Mode: style for the selected option. */
+.nightMode .option-label.user-selected, .night_mode .option-label.user-selected {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    border-color: var(--primary-color-light) !important;
+}
+
+/* Styles for disabled or already evaluated options. */
+.disabled-option, .option-label.evaluated {
+    cursor: default;
+    opacity: 1; /* Ensures it does not dim. */
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Style for the input (radio/checkbox) inside the label. */
+.option-label input.styled-input {
+    flex-shrink: 0; /* Prevents the input from shrinking. */
+    margin-top: 0.25rem;
+    margin-right: 1rem;
+    width: 1.35em;
+    height: 1.35em;
+}
+
+/* Style for the option text, allowing it to occupy the remaining space. */
+.option-label .option-text {
+    flex-grow: 1;
+    min-width: 0; /* Allows text to truncate if necessary. */
+    word-break: break-word; /* Breaks long words to prevent overflow. */
+}
+
+/* Container for embedded multimedia elements (images, custom audios/videos). */
+.media-wrapper {
+    margin: 0.8rem 0;
+}
+
+/* General style for embedded images and other media. */
+.embedded-media {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius);
+    background: var(--border-light); /* Background to show during loading. */
+    box-shadow: var(--shadow);
+}
+
+/* Night Mode for embedded media. */
+.nightMode .embedded-media, .night_mode .embedded-media {
+    background: var(--border-dark);
+    box-shadow: var(--shadow-dark);
+}
+
+/*
+================================================================================
+ SECTION 3: ADVANCED MEDIA PLAYER STYLES
+================================================================================
+ Specific styles for custom audio and video players,
+ including their controls, progress bars, and additional functionalities.
+--------------------------------------------------------------------------------
+*/
+
+/* --- AUDIO PLAYER STYLES --- */
+
+/* Main audio player container. */
+.custom-audio-player {
+    background-color: var(--light-card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    flex-wrap: wrap; /* Allows controls to wrap on small screens. */
+    margin: 0.8rem auto; /* Centers the player. */
+    box-sizing: border-box;
+}
+
+/* Night Mode for the audio player. */
+.nightMode .custom-audio-player, .night_mode .custom-audio-player {
+    background-color: var(--dark-card-bg);
+    border-color: var(--border-dark);
+}
+
+/* Hides the native <audio> element. */
+.custom-audio-element {
+    display: none;
+}
+
+/* Main controls container (progress, time, secondary controls). */
+.main-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-grow: 1;
+    min-width: 250px; /* Ensures a minimum width. */
+}
+
+/* Main Play/Pause button. */
+.play-pause-btn {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    flex-shrink: 0; /* Prevents the button from shrinking. */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover effect for the Play/Pause button. */
+.play-pause-btn:hover {
+    background-color: var(--primary-color-light);
+    transform: scale(1.05);
+}
+
+/* SVG icons inside the Play/Pause button. */
+.play-pause-btn svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Visibility of Play/Pause icons. */
+.play-icon {
+    display: block;
+}
+.pause-icon {
+    display: none;
+}
+.custom-audio-player.playing .play-icon {
+    display: none;
+}
+.custom-audio-player.playing .pause-icon {
+    display: block;
+}
+
+/* Progress bar and time container. */
+.progress-time-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+/* Progress bar container. */
+.custom-audio-player .progress-bar-container {
+    flex-grow: 1;
+    height: 8px;
+    background-color: var(--border-light);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Night Mode for the progress bar. */
+.nightMode .custom-audio-player .progress-bar-container, .night_mode .custom-audio-player .progress-bar-container {
+    background-color: var(--border-dark);
+}
+
+/* Progress bar fill. */
+.custom-audio-player .progress-bar-fill {
+    height: 100%;
+    width: 0%; /* Controlled by JS to show progress. */
+    background-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+/* Mark indicators (A, B) and loop range on the progress bar. */
+.custom-audio-player .mark-indicator, .custom-audio-player .loop-range-indicator {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    pointer-events: none; /* Do not interfere with clicking on the bar. */
+    display: none;        /* Hidden by default, visible with JS. */
+}
+.custom-audio-player .mark-indicator {
+    top: -4px;
+    width: 2px;
+    height: 16px;
+    background-color: var(--secondary-color);
+    transform: translateX(-50%); /* Centers the indicator in its position. */
+}
+.custom-audio-player .loop-range-indicator {
+    background-color: rgba(59, 130, 246, 0.3); /* Translucent color for the range. */
+    border-radius: 4px;
+}
+
+/* Time display (current / duration). */
+.custom-audio-player .time-display {
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums; /* Aligns numbers for better readability. */
+    color: var(--light-text-muted);
+    flex-shrink: 0;
+}
+
+/* Night Mode for time display. */
+.nightMode .custom-audio-player .time-display, .night_mode .custom-audio-player .time-display {
+    color: var(--dark-text-muted);
+}
+
+/* Container for secondary controls (speed, loop, volume). */
+.secondary-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem 1.25rem; /* Space between control groups. */
+}
+
+/* Control groups (speed, loop, volume). */
+.speed-controls, .loop-controls, .custom-audio-player .volume-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* General style for secondary control buttons. */
+.custom-audio-player .control-btn {
+    background: none;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--light-text-muted);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+/* Night Mode for control buttons. */
+.nightMode .custom-audio-player .control-btn, .night_mode .custom-audio-player .control-btn {
+    border-color: var(--border-dark);
+    color: var(--dark-text-muted);
+}
+
+/* Hover effect for control buttons. */
+.custom-audio-player .control-btn:hover:not(:disabled) {
+    background-color: var(--border-light);
+    color: var(--light-text);
+}
+
+/* Night Mode: hover effect for control buttons. */
+.nightMode .custom-audio-player .control-btn:hover:not(:disabled), .night_mode .custom-audio-player .control-btn:hover:not(:disabled) {
+    background-color: var(--border-dark);
+    color: var(--dark-text);
+}
+
+/* Style for active control buttons (e.g. active loop button). */
+.custom-audio-player .control-btn.active {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Style for disabled control buttons. */
+.custom-audio-player .control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* SVG icons on control buttons. */
+.custom-audio-player .control-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Playback speed display. */
+.custom-audio-player .speed-display {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 45px;
+    text-align: center;
+}
+
+/* Night Mode for speed display. */
+.nightMode .custom-audio-player .speed-display, .night_mode .custom-audio-player .speed-display {
+    color: var(--primary-color-light);
+}
+
+/* Mute/Unmute button. */
+.volume-btn {
+    background: none;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--light-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+/* Night Mode for the volume button. */
+.nightMode .volume-btn, .night_mode .volume-btn {
+    border-color: var(--border-dark);
+    color: var(--dark-text-muted);
+}
+
+/* Hover effect for the volume button. */
+.volume-btn:hover:not(:disabled) {
+    background-color: var(--border-light);
+    color: var(--light-text);
+}
+
+/* Night Mode: hover effect for the volume button. */
+.nightMode .volume-btn:hover:not(:disabled), .night_mode .volume-btn:hover:not(:disabled) {
+    background-color: var(--border-dark);
+    color: var(--dark-text);
+}
+
+/* SVG icons on the volume button. */
+.volume-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Volume slider bar. */
+.volume-slider-container {
+    width: 80px;
+    height: 6px;
+    background-color: var(--border-light);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Night Mode for the volume slider bar. */
+.nightMode .volume-slider-container, .night_mode .volume-slider-container {
+    background-color: var(--border-dark);
+}
+
+/* Volume slider fill. */
+.volume-slider-fill {
+    height: 100%;
+    width: 100%;
+    background-color: var(--light-text-muted);
+    border-radius: 3px;
+}
+
+/* Night Mode for the volume bar fill. */
+.nightMode .volume-slider-fill, .night_mode .volume-slider-fill {
+    background-color: var(--dark-text-muted);
+}
+
+/* Media Queries for audio player adaptability. */
+@media (max-width: 640px) {
+    .custom-audio-player { flex-direction: column; }
+    .main-controls-wrapper { width: 100%; min-width: 0; }
+    .progress-time-container { flex-direction: column; gap: 0.5rem; align-items: stretch; }
+    .time-display { text-align: center; width: 100%; }
+    .secondary-controls { flex-direction: column; align-items: center; gap: 1.25rem; width: 100%; }
+}
+@media (max-width: 350px) {
+    .speed-controls, .loop-controls, .custom-audio-player .volume-container { flex-direction: column; gap: 0.75rem; width: 100%; }
+    .volume-slider-container { width: 160px; max-width: 100%; }
+}
+
+/* --- VIDEO PLAYER STYLES --- */
+
+/* Main custom video player container. */
+.custom-video-player {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    margin: 0.8rem auto;
+}
+
+/* Native video element. */
+.custom-video-element {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Video controls container (absolute position at the bottom). */
+.video-controls-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem 1.25rem 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); /* Gradient to fade upwards. */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0; /* Hidden by default. */
+    transform: translateY(100%); /* Slid out of view. */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Entrance/exit animation. */
+}
+
+/* Visibility and animation of controls on hover or when activated by JS. */
+.custom-video-player:hover .video-controls-container, .custom-video-player.controls-visible .video-controls-container {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Progress controls (progress bar and time). */
+.custom-video-player .progress-controls {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Progress bar for video. */
+.custom-video-player .progress-bar-container {
+    flex-grow: 1;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent background. */
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Buffer and fill bars inside the progress bar. */
+.custom-video-player .progress-bar-buffered, .custom-video-player .progress-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 3px;
+}
+.custom-video-player .progress-bar-buffered {
+    background-color: rgba(255, 255, 255, 0.5); /* Brighter color for the buffer. */
+    transition: width 0.2s;
+}
+.custom-video-player .progress-bar-fill {
+    background-color: var(--primary-color); /* Primary color for current progress. */
+    z-index: 2; /* Ensures the fill is on top of the buffer. */
+}
+
+/* Mark indicators (A, B) and loop range on the video progress bar. */
+.custom-video-player .mark-indicator, .custom-video-player .loop-range-indicator {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    pointer-events: none;
+    display: none;
+    z-index: 3; /* Ensures they are on top of the fill. */
+}
+.custom-video-player .mark-indicator {
+    top: -5px;
+    width: 2px;
+    height: 16px;
+    background-color: var(--secondary-color);
+    transform: translateX(-50%);
+}
+.custom-video-player .loop-range-indicator {
+    background-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Time display on the video player. */
+.custom-video-player .time-display {
+    font-size: 0.85rem;
+    color: white;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Container for bottom video controls. */
+.bottom-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem 1rem;
+}
+
+/* Generic control group. */
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* General style for video control buttons. */
+.custom-video-player .control-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.25rem;
+    opacity: 0.8;
+    transition: opacity 0.2s, transform 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+/* Hover effect for video control buttons. */
+.custom-video-player .control-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Style for disabled control buttons. */
+.custom-video-player .control-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Style for active control buttons. */
+.custom-video-player .control-btn.active {
+    color: var(--primary-color-light);
+}
+
+/* SVG icons on video control buttons. */
+.custom-video-player .control-btn svg {
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); /* Shadow to add depth. */
+}
+
+/* Speed display on the video player. */
+.custom-video-player .speed-display {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Style for mark buttons (A, B) on the video player. */
+.custom-video-player .mark-btn {
+    font-family: var(--font-family);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Volume control container on the video player. */
+.custom-video-player .volume-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Volume slider bar on the video player. */
+.custom-video-player .volume-slider-container {
+    width: 70px;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 2.5px;
+    cursor: pointer;
+}
+
+/* Volume slider fill on the video player. */
+.custom-video-player .volume-slider-fill {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    border-radius: 2.5px;
+}
+
+/* Overlay layer over the video for interaction (play/pause). */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    cursor: pointer;
+    opacity: 1; /* Visible when video is paused. */
+    transition: opacity 0.3s ease;
+}
+
+/* Hides the overlay when the video is playing. */
+.custom-video-player.playing .video-overlay {
+    opacity: 0;
+    pointer-events: none; /* Allows interaction with the video underneath. */
+}
+
+/* Central play button on the overlay (not in current HTML, but style exists). */
+.overlay-play-btn {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    color: white;
+    backdrop-filter: blur(5px); /* Blur effect behind the button. */
+}
+.overlay-play-btn svg {
+    width: 30px;
+    height: 30px;
+}
+
+/* Container for right controls (allows menu positioning). */
+.right-controls {
+    position: relative;
+}
+
+/* "More options" button (hidden by default, visible with JS on responsive). */
+.more-options-btn {
+    display: none;
+}
+
+/* "More options" menu (dropdown). */
+.more-options-menu {
+    position: absolute;
+    bottom: calc(100% + 10px); /* Positions above controls. */
+    right: 0;
+    background-color: rgba(28, 28, 30, 0.9);
+    backdrop-filter: blur(5px);
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: none; /* Hidden by default. */
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 10;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* Shows the menu when active. */
+.more-options-menu.active {
+    display: flex;
+}
+
+/* Styles for control groups within the options menu. */
+.more-options-menu .control-group, .more-options-menu .volume-container {
+    padding: 0.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.more-options-menu .control-group:last-child, .more-options-menu .volume-container:last-child {
+    border-bottom: none;
+}
+
+/* Styles for the video player in full-screen mode. */
+.custom-video-player:fullscreen, .custom-video-player:-webkit-full-screen {
+    background-color: black;
+}
+.custom-video-player:fullscreen .custom-video-element, .custom-video-player:-webkit-full-screen .custom-video-element {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+/* END VIDEO PLAYER */
+
+/*
+================================================================================
+ SECTION 4: SPECIFIC QUIZ TYPES AND CLOZE STYLES
+================================================================================
+ Defines the styles for different interaction components
+ according to the question type (matching, ordering, sentence formation)
+ and cloze elements (gaps).
+--------------------------------------------------------------------------------
+*/
+
+/*
+ NOTE ON ORIGINAL CORRECTION:
+ The `overflow: hidden;` properties were removed from the `.matching-row`
+ and `.draggable-item` rules in the original source code. This is maintained as such.
+ The goal is to prevent expanded content, such as inline explanations,
+ from being clipped if they exceed the size of the main row container.
+*/
+.matching-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 0rem; /* Adjusted bottom margin. */
+    transition: all 0.2s ease;
+}
+
+.draggable-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    cursor: grab; /* Indicates that the element can be dragged. */
+    transition: all 0.2s ease-out;
+    margin-bottom: 0; /* Adjusted bottom margin. */
+}
+
+
+/* Bottom margin for matching rows if there are no individual explanations. */
+.styled-card:not(.has-individual-explanations) .matching-row {
+    margin-bottom: 0.75rem;
+}
+
+/* Inner content of the matching row (left text and right dropdown). */
+.matching-row-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    background-color: var(--light-card-bg);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Night Mode for matching row content. */
+.nightMode .matching-row-content, .night_mode .matching-row-content {
+    border-color: var(--border-dark);
+    background-color: var(--dark-card-bg);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Hover effect for matching row. */
+.matching-row:hover:not(.evaluated) .matching-row-content {
+    border-color: var(--primary-color-light);
+}
+.matching-row:hover:not(.evaluated) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* Media Query for matching rows on larger screens. */
+@media (min-width: 640px) {
+    .matching-row-content {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.25rem 1.5rem;
+    }
+    .matching-row-left {
+        flex-grow: 1;
+        min-width: 0;
+    }
+    .matching-row-right {
+        flex-shrink: 0;
+        max-width: 300px;
+    }
+}
+
+/* Style for dropdowns (select) in matching questions. */
+select.styled-select {
+    min-width: 180px;
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: var(--light-card-bg);
+    color: var(--light-text);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 2.75rem 0.75rem 1rem; /* Space for the custom arrow. */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    /* SVG image for the dropdown arrow, base64 encoded. */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25em 1.25em;
+    appearance: none; /* Hides the native system arrow. */
+    -webkit-appearance: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Night Mode for dropdowns. */
+.nightMode select.styled-select, .night_mode select.styled-select {
+    background-color: var(--dark-card-bg);
+    color: var(--dark-text);
+    border-color: var(--border-dark);
+    /* SVG arrow with color adapted for night mode. */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Style for disabled dropdowns. */
+select.styled-select:disabled {
+    background-color: var(--border-light) !important;
+    color: var(--light-text-muted) !important;
+    opacity: 0.8;
+}
+
+/* Night Mode for disabled dropdowns. */
+.nightMode select.styled-select:disabled, .night_mode select.styled-select:disabled {
+    background-color: var(--border-dark) !important;
+    color: var(--dark-text-muted) !important;
+}
+
+/* Draggable list container (for ordering questions). */
+.draggable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 120px; /* Ensures a visible area for dragging. */
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
+
+/* Bottom margin for draggable items if there are no individual explanations. */
+.styled-card:not(.has-individual-explanations) .draggable-item {
+    margin-bottom: 0.75rem;
+}
+
+/* Inner content of the draggable item (number and text). */
+.draggable-item-content {
+    display: flex;
+    align-items: center;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    background-color: var(--light-card-bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* Night Mode for draggable item content. */
+.nightMode .draggable-item-content, .night_mode .draggable-item-content {
+    border-color: var(--border-dark);
+    background-color: var(--dark-card-bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Hover effect for draggable item (excluding the one being dragged or evaluated ones). */
+.draggable-item:hover:not(.dragging):not(.evaluated) .draggable-item-content {
+    border-color: var(--primary-color-light);
+}
+.draggable-item:hover:not(.dragging):not(.evaluated) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* Style for the item currently being dragged. */
+.draggable-item.dragging {
+    opacity: 0.9;
+    cursor: grabbing;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transform: scale(1.03) rotate(1.5deg); /* Slight rotation for visual drag effect. */
+}
+
+/* Style for draggable items once the card has been evaluated. */
+.draggable-item.evaluated {
+    cursor: default;
+    opacity: 1;
+    pointer-events: none; /* Disables interactions after evaluating. */
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Order number in the draggable item. */
+.draggable-item .order-number {
+    font-weight: 600;
+    margin-right: 1.25rem;
+    color: var(--primary-color);
+    flex-shrink: 0;
+    width: 30px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* Night Mode for the order number. */
+.nightMode .draggable-item .order-number, .night_mode .draggable-item .order-number {
+    color: var(--primary-color-light);
+}
+
+/* Text of the draggable item. */
+.draggable-item .item-text {
+    flex-grow: 1;
+    word-break: break-word;
+    font-size: 1rem;
+}
+
+/* Response area for sentence formation. */
+.sentence-response-area {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    min-height: 80px;
+    background-color: var(--light-bg);
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); /* Inner shadow for "box" effect. */
+}
+
+/* Night Mode for sentence response area. */
+.nightMode .sentence-response-area, .night_mode .sentence-response-area {
+    border-color: var(--border-dark);
+    background-color: rgba(255,255,255,0.03);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Word bank for sentence formation. */
+.sentence-word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    border: 2px dashed var(--border-light); /* Dotted border for distinction. */
+    border-radius: var(--border-radius);
+    background-color: var(--light-card-bg);
+}
+
+/* Night Mode for the word bank. */
+.nightMode .sentence-word-bank, .night_mode .sentence-word-bank {
+    border-color: var(--border-dark);
+    background-color: var(--dark-card-bg);
+}
+
+/* Individual word buttons in the bank. */
+.sentence-word-button {
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--primary-color-light);
+    border-radius: var(--border-radius);
+    background-color: white;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.15s ease-out;
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 0.95rem;
+}
+
+/* Night Mode for word buttons. */
+.nightMode .sentence-word-button, .night_mode .sentence-word-button {
+    background-color: var(--dark-card-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color-light);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Hover effect for word buttons. */
+.sentence-word-button:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Night Mode: hover effect for word buttons. */
+.nightMode .sentence-word-button:hover:not(:disabled), .night_mode .sentence-word-button:hover:not(:disabled) {
+    background-color: var(--primary-color-light);
+    color: var(--dark-bg);
+}
+
+/* Style for disabled word buttons. */
+.sentence-word-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: var(--border-light);
+    border-color: var(--border-light);
+    color: var(--light-text-muted);
+    box-shadow: none;
+    transform: none;
+}
+
+/* Night Mode for disabled word buttons. */
+.nightMode .sentence-word-button:disabled, .night_mode .sentence-word-button:disabled {
+    background-color: var(--border-dark);
+    border-color: var(--border-dark);
+    color: var(--dark-text-muted);
+}
+
+/* Style for word buttons that are already in the response area. */
+.sentence-response-area .sentence-word-button {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+/* Night Mode for word buttons in the response area. */
+.nightMode .sentence-response-area .sentence-word-button, .night_mode .sentence-response-area .sentence-word-button {
+    background-color: var(--primary-color-light);
+    color: var(--dark-bg);
+    border-color: var(--primary-color-light);
+}
+
+/* Resets hover effect for evaluated word buttons. */
+.sentence-response-area.evaluated .sentence-word-button:hover {
+    transform: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Main container for the hints section. */
+.hint-section-main {
+    margin-top: 1.5rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.6rem; /* Space between each individual hint. */
+}
+
+/* Individual hint item. */
+.individual-hint-item {
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    background-color: var(--light-card-bg);
+    overflow: hidden; /* Ensures animated content does not overflow. */
+}
+
+/* Night Mode for individual hints. */
+.nightMode .individual-hint-item, .night_mode .individual-hint-item {
+    border-color: var(--border-dark);
+    background-color: var(--dark-card-bg);
+}
+
+/* Button to expand/collapse hint content. */
+.toggle-individual-hint-button {
+    margin: 0; padding: 0; border: none; background: none;
+    outline: none !important; box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important; /* Removes highlight on mobile touch. */
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+/* Ensures the hint button has no outline/shadow when focused. */
+.toggle-individual-hint-button:focus, .toggle-individual-hint-button:active {
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* Expansion/collapse indicator arrow. */
+.individual-arrow {
+    display: inline-block;
+    transition: transform 0.3s ease-out; /* Rotation animation. */
+}
+
+/* Hint content container, for height animation. */
+.hint-content-wrapper {
+    max-height: 0; /* Collapsed by default. */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out; /* Expansion/collapse animation. */
+}
+
+/* Padding and top border for actual hint content. */
+.hint-content-wrapper > .p-3-manual {
+    padding: 1rem;
+    border-top: 1px solid var(--border-light);
+}
+
+/* Night Mode for hint content border. */
+.nightMode .hint-content-wrapper > .p-3-manual, .night_mode .hint-content-wrapper > .p-3-manual {
+    border-top-color: var(--border-dark);
+}
+
+/* Style for the main hint text. */
+.display-individual-hint {
+    background-color: rgba(245,158,11,0.08); /* Light background with warning tone. */
+    border-left: 4px solid var(--warning-color); /* Warning left border. */
+    color: #B45309; /* Dark text color for contrast. */
+    padding: 0.8rem 1rem;
+    border-radius: 0 0.25rem 0.25rem 0;
+    font-size: 0.875rem;
+    word-break: break-word;
+}
+
+/* Night Mode for hint text. */
+.nightMode .display-individual-hint, .night_mode .display-individual-hint {
+    background-color: rgba(245,158,11,0.15);
+    color: #FCD34D;
+}
+
+/* Hint title inside the toggle button. */
+.hint-title-display {
+    font-weight: 500;
+    cursor: default;
+    flex-grow: 1;
+    margin-right: 0.75rem;
+}
+
+/* Explanations appearing below individual options. */
+.inline-explanation {
+    padding: 0.75rem 1.25rem;
+    margin-top: 0;
+    border: 1px solid;
+    border-color: var(--border-light);
+    border-top: none; /* Visually connects with the element above. */
+    border-radius: 0 0 var(--border-radius) var(--border-radius); /* Bottom rounded borders. */
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--light-text-muted);
+}
+
+/* Night Mode for inline explanations. */
+.nightMode .inline-explanation, .night_mode .inline-explanation {
+    color: var(--dark-text-muted);
+    border-color: var(--border-dark);
+}
+
+/* Adjusts borders of parent containers when they have inline explanations. */
+.option-container:has(.inline-explanation) .option-label.evaluated,
+.matching-row:has(.inline-explanation) .matching-row-content,
+.draggable-item:has(.inline-explanation) .draggable-item-content {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-width: 0; /* Removes bottom border so the explanation "sticks". */
+}
+
+/* Adjusts bottom padding of the label when there is an inline explanation. */
+.option-container:has(.inline-explanation) .option-label.evaluated {
+    padding-bottom: calc(1.15rem + 1px); /* Compensates for the explanation's top border. */
+}
+.matching-row:has(.inline-explanation) .matching-row-content {
+    padding-bottom: calc(1rem + 1px);
+}
+
+/*
+ --- START OF SPECIFICITY FIX (Original from source code) ---
+ These rules increase specificity to ensure that feedback colors
+ (correct, incorrect, IDK) prevail over other selection
+ or state styles, guaranteeing that the user clearly sees the result.
+*/
+.option-label.feedback-correct, .option-label.user-selected.feedback-correct, .matching-row-content.feedback-correct, .draggable-item-content.feedback-correct {
+    border-color: var(--secondary-color) !important;
+    background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+.nightMode .option-label.feedback-correct, .nightMode .option-label.user-selected.feedback-correct, .nightMode .matching-row-content.feedback-correct, .nightMode .draggable-item-content.feedback-correct, .night_mode .option-label.feedback-correct, .night_mode .option-label.user-selected.feedback-correct, .night_mode .matching-row-content.feedback-correct, .night_mode .draggable-item-content.feedback-correct {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+.option-label.feedback-incorrect, .option-label.user-selected.feedback-incorrect, .matching-row-content.feedback-incorrect, .draggable-item-content.feedback-incorrect {
+    border-color: var(--danger-color) !important;
+    background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+.nightMode .option-label.feedback-incorrect, .nightMode .option-label.user-selected.feedback-incorrect, .nightMode .matching-row-content.feedback-incorrect, .nightMode .draggable-item-content.feedback-incorrect, .night_mode .option-label.feedback-incorrect, .night_mode .option-label.user-selected.feedback-incorrect, .night_mode .matching-row-content.feedback-incorrect, .night_mode .draggable-item-content.feedback-incorrect {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+/* --- END OF SPECIFICITY FIX (Original from source code) --- */
+
+/* Styles for elements marked as "I don't know" or "IDK". */
+.option-label.feedback-idk, .matching-row-content.feedback-idk, .draggable-item-content.feedback-idk, .sentence-response-area.feedback-idk {
+    border-color: var(--warning-color) !important;
+    background-color: rgba(245, 158, 11, 0.08) !important;
+}
+
+/* Night Mode for IDK elements. */
+.nightMode .option-label.feedback-idk, .nightMode .matching-row-content.feedback-idk, .nightMode .draggable-item-content.feedback-idk, .nightMode .sentence-response-area.feedback-idk, .night_mode .option-label.feedback-idk, .night_mode .matching-row-content.feedback-idk, .night_mode .draggable-item-content.feedback-idk, .night_mode .sentence-response-area.feedback-idk {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+/* Styles for inline explanations according to feedback. */
+.inline-explanation.feedback-idk {
+    border-color: var(--warning-color);
+    background-color: rgba(245, 158, 11, 0.05);
+}
+
+/* Night Mode for IDK explanations. */
+.nightMode .inline-explanation.feedback-idk, .night_mode .inline-explanation.idk {
+    background-color: rgba(245, 158, 11, 0.1);
+}
+
+.inline-explanation.feedback-correct {
+    border-color: var(--secondary-color);
+    background-color: rgba(16, 185, 129, 0.08);
+}
+
+/* Night Mode for correct explanations. */
+.nightMode .inline-explanation.feedback-correct, .night_mode .inline-explanation.correct {
+    background-color: rgba(16, 185, 129, 0.15);
+}
+
+.inline-explanation.feedback-incorrect {
+    border-color: var(--danger-color);
+    background-color: rgba(239, 68, 68, 0.08);
+}
+
+/* Night Mode for incorrect explanations. */
+.nightMode .inline-explanation.feedback-incorrect, .night_mode .inline-explanation.incorrect {
+    background-color: rgba(239, 68, 68, 0.15);
+}
+
+/*
+================================================================================
+ SECTION 5: BUTTON AND GENERAL FEEDBACK STYLES
+================================================================================
+ Styles for action buttons, general feedback messages,
+ and text input fields.
+--------------------------------------------------------------------------------
+*/
+
+/* General button style. */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.2s ease-out;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Primary button (blue). */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Secondary button (grey). */
+.btn-secondary {
+    background-color: var(--neutral-color);
+    color: white;
+}
+
+/* Night Mode for the secondary button. */
+.nightMode .btn-secondary, .night_mode .btn-secondary {
+    background-color: var(--dark-neutral-color);
+}
+
+/* Small button version. */
+.btn-xs {
+    padding: 0.4rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Style for disabled buttons. */
+.btn:disabled {
+    background-color: var(--neutral-color-light) !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Night Mode for disabled buttons. */
+.nightMode .btn:disabled, .night_mode .btn:disabled {
+    background-color: var(--dark-neutral-color) !important;
+    color: var(--dark-text-muted) !important;
+}
+
+/* Per-question feedback container (Correct, Incorrect, I Didn't Know). */
+.feedback-per-question {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    border-width: 1px;
+    border-style: solid;
+}
+
+/* Style for "Correct" feedback. */
+.feedback-per-question.correct {
+    background-color: rgba(16,185,129,0.08);
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Night Mode for "Correct" feedback. */
+.nightMode .feedback-per-question.correct, .night_mode .feedback-per-question.correct {
+    background-color: rgba(16,185,129,0.15);
+    color: #6EE7B7;
+}
+
+/* Style for "Incorrect" feedback. */
+.feedback-per-question.incorrect {
+    background-color: rgba(239,68,68,0.08);
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+/* Night Mode for "Incorrect" feedback. */
+.nightMode .feedback-per-question.incorrect, .night_mode .feedback-per-question.incorrect {
+    background-color: rgba(239,68,68,0.15);
+    color: #FCA5A5;
+}
+
+/* Style for "I Didn't Know" feedback. */
+.feedback-per-question.idk {
+    background-color: rgba(245,158,11,0.08);
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+/* Night Mode for "I Didn't Know" feedback. */
+.nightMode .feedback-per-question.idk, .night_mode .feedback-per-question.idk {
+    background-color: rgba(245,158,11,0.15);
+    color: #FCD34D;
+}
+
+/* General explanation container. */
+.explanation-content {
+    max-height: 0; /* Collapsed by default. */
+    overflow: hidden;
+    transition: all 0.4s ease-out; /* Expansion animation. */
+    padding: 0 1rem; /* Initial zero padding. */
+    margin-top: 0;
+    background-color: rgba(59, 130, 246, 0.08);
+    border-radius: var(--border-radius);
+}
+
+/* Night Mode for general explanation. */
+.nightMode .explanation-content, .night_mode .explanation-content {
+    background-color: rgba(59, 130, 246, 0.15);
+}
+
+/* Style when explanation is visible. */
+.explanation-content.visible {
+    max-height: 500px; /* Sufficient for most explanations. */
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+}
+
+/* Explanation section header. */
+.explanation-content h4 {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+/* Night Mode for explanation header. */
+.nightMode .explanation-content h4, .night_mode .explanation-content h4 {
+    color: var(--primary-color-light);
+}
+
+/* Style for the text area (textarea). */
+textarea.styled-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    resize: vertical; /* Allows vertical resizing. */
+    max-width: 100%;
+    max-height: 400px;
+    min-height: 80px;
+}
+
+/* Night Mode for the textarea. */
+.nightMode textarea.styled-textarea, .night_mode textarea.styled-textarea {
+    border-color: var(--dark-bg);
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+/* Base styles for custom radio and checkbox inputs. */
+input[type="radio"].styled-input, input[type="checkbox"].styled-input {
+    appearance: none; /* Removes native browser appearance. */
+    -webkit-appearance: none;
+    width: 1.35em;
+    height: 1.35em;
+    border: 2px solid var(--border-light);
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* Night Mode for radio/checkbox inputs. */
+.nightMode input[type="radio"].styled-input, .nightMode input[type="checkbox"].styled-input, .night_mode input[type="radio"].styled-input, .night_mode input[type="checkbox"].styled-input {
+    border-color: var(--border-dark);
+}
+
+/* Rounded border for radio buttons. */
+input[type="radio"].styled-input {
+    border-radius: 50%;
+}
+
+/* Slightly rounded border for checkboxes. */
+input[type="checkbox"].styled-input {
+    border-radius: 5px;
+}
+
+/* Style when input is checked. */
+input[type="radio"].styled-input:checked, input[type="checkbox"].styled-input:checked {
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color);
+}
+
+/* Checked indicator for radio buttons (center dot). */
+input[type="radio"].styled-input:checked::after {
+    content: '';
+    display: block;
+    width: 0.65em;
+    height: 0.65em;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Checked indicator for checkboxes (tick). */
+input[type="checkbox"].styled-input:checked::after {
+    content: '✓';
+    display: block;
+    color: white;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.25em; /* Centers the tick vertically. */
+}
+
+/* Anki review buttons container (fixed at the bottom). */
+.anki-buttons-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999; /* Ensures it is above other content. */
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--light-card-bg);
+    border-top: 1px solid var(--border-light);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08); /* Top shadow. */
+    margin-top: 0;
+}
+
+/* Night Mode for button container. */
+.nightMode .anki-buttons-container, .night_mode .anki-buttons-container {
+    background-color: var(--dark-card-bg);
+    border-top-color: var(--border-dark);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Base style for individual Anki buttons. */
+.anki-button {
+    background-color: var(--light-card-bg);
+    border: 2px solid;
+    border-radius: 50%; /* Circular buttons. */
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    box-shadow: var(--shadow);
+    font-weight: bold;
+    line-height: 1; /* Adjusts line height for text/icon. */
+    padding: 0;
+}
+
+/* Night Mode for Anki buttons. */
+.nightMode .anki-button, .night_mode .anki-button {
+    background-color: var(--dark-card-bg);
+    box-shadow: var(--shadow-dark);
+}
+
+/* Hover effect for Anki buttons. */
+.anki-button:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+/* Specific styles for the "Again" button. */
+.anki-button-again {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+    font-size: 1.9em;
+}
+.anki-button-again:hover {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* Specific styles for the "Hard" button. */
+.anki-button-hard {
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+    font-size: 2.2em; /* Larger icon for the exclamation mark. */
+}
+.anki-button-hard:hover {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+/* Specific styles for the "Good" button. */
+.anki-button-good {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    font-size: 2em;
+    padding-top: 2px; /* Small visual adjustment for the tick. */
+}
+.anki-button-good:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Question tags container. */
+.question-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+/* Style for individual tags. */
+.tag-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px; /* Very rounded border for "pill" shape. */
+    color: white;
+    background-color: var(--neutral-color);
+}
+
+/* Night Mode for tags. */
+.nightMode .tag-badge, .night_mode .tag-badge {
+    background-color: var(--dark-neutral-color);
+}
+
+/* Top timer bar container. */
+.timer-bar-container {
+    position: fixed; /* Fixed at the top. */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    padding: 0.5rem;
+    background-color: var(--light-card-bg);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    height: auto;
+    margin-bottom: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-end; /* Aligns the fill bar to the right by default. */
+}
+
+/* Night Mode for timer bar container. */
+.nightMode .timer-bar-container, .night_mode .timer-bar-container {
+    background-color: var(--dark-card-bg);
+    border-bottom-color: var(--border-dark);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Timer fill bar. */
+.timer-bar-fill {
+    height: 6px;
+    width: 100%;
+    background-color: var(--primary-color);
+    transition: width 1s linear; /* Width reduction animation. */
+    border-radius: 3px;
+    position: relative;
+    transform-origin: right center; /* The bar reduces from the right. */
+}
+
+/* Visual sound indicator (not in HTML, but style exists). */
+.sound-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    color: white;
+}
+.sound-indicator.active {
+    opacity: 1;
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Style for active cloze placeholder. */
+.cloze-placeholder-active {
+    color: #0ea5e9;    /* Bright blue. */
+    font-weight: 700;
+    background-color: rgba(14, 165, 233, 0.1);
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* Style for inactive cloze placeholder (not the current one). */
+.cloze-placeholder-inactive {
+    color: var(--neutral-color-light); /* Lighter grey. */
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* Style for revealed cloze text. */
+.cloze {
+    color: #0ea5e9; /* Bright blue. */
+    font-weight: 700;
+}
+
+/* Special style for all clozes review. */
+.cloze-all-review {
+    color: #0ea5e9;
+    font-weight: 700;
+    border-bottom: 2px solid #0ea5e9; /* Underline. */
+}
+
+/* Question context (if used). */
+.question-context {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--light-text-muted);
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Night Mode for question context. */
+.nightMode .question-context, .night_mode .question-context {
+    color: var(--dark-text-muted);
+    border-bottom-color: var(--border-dark);
+}
+
+/* Margin adjustments for question text on the back. */
+#q-card-back .question-text {
+    margin-bottom: 1rem;
+}
+
+/* Container for multiple review inputs (e.g., for exact answer clozes). */
+.re-review-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Individual re-review item. */
+.re-review-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Label for re-review inputs. */
+.re-review-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--light-text-muted);
+}
+
+/* Night Mode for re-review label. */
+.nightMode .re-review-label, .night_mode .re-review-label {
+    color: var(--dark-text-muted);
+}
+
+/* Feedback details container (for exact answer). */
+.feedback-details {
+    margin-bottom: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--border-radius);
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-light);
+}
+
+/* Night Mode for feedback details. */
+.nightMode .feedback-details, .night_mode .feedback-details {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: var(--border-dark);
+}
+
+/* Secondary title within feedback details. */
+.feedback-details h5 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+/* Subsection header within feedback details. */
+.feedback-details h6 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--light-text-muted);
+}
+
+/* Night Mode for feedback subsection header. */
+.nightMode .feedback-details h6, .night_mode .feedback-details h6 {
+    color: var(--dark-text-muted);
+}
+
+/* Container for showing text differences. */
+.diff-container {
+    padding: 0.75rem;
+    border-radius: 6px;
+    background-color: var(--light-card-bg);
+    font-family: var(--font-family);
+}
+
+/* Night Mode for differences container. */
+.nightMode .diff-container, .night_mode .diff-container {
+    background-color: var(--dark-bg);
+}
+
+/* Style for common text in differences. */
+.diff-common {
+    color: var(--secondary-color);
+}
+
+/* Night Mode for common text. */
+.nightMode .diff-common, .night_mode .diff-common {
+    color: #6EE7B7;
+}
+
+/* Style for text added by the user (incorrect). */
+.diff-added {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #991B1B;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+}
+
+/* Night Mode for added text. */
+.nightMode .diff-added, .night_mode .diff-added {
+    background-color: rgba(239, 68, 68, 0.25);
+    color: #FCA5A5;
+}
+
+/* Style for missing text in user's answer (expected). */
+.diff-removed {
+    background-color: rgba(107, 114, 128, 0.15);
+    color: #4B5563;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+}
+
+/* Night Mode for missing text. */
+.nightMode .diff-removed, .night_mode .diff-removed {
+    background-color: rgba(107, 114, 128, 0.25);
+    color: #9CA3AF;
+}
+
+/* Margin between difference analysis sections. */
+.diff-analysis-section + .diff-analysis-section {
+    margin-top: 0.75rem;
+}
+
+/*
+================================================================================
+ SECTION 6: USABILITY AND ACCESSIBILITY (UX/ACCESSIBILITY) STYLES
+================================================================================
+ Styles related to visual feedback for keyboard navigation
+ and cursor hiding, and improvements in Anki button presentation.
+--------------------------------------------------------------------------------
+*/
+
+/* Style for keyboard-focused elements (options, matching/ordering rows). */
+.keyboard-focused.option-label, .keyboard-focused.matching-row-content, .keyboard-focused.draggable-item-content, .sentence-word-button.keyboard-focused {
+    outline: 3px solid var(--primary-color-light) !important;
+    outline-offset: 3px; /* Space between border and outline. */
+    box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.4), 0 6px 16px rgba(0,0,0,0.1) !important;
+    transform: translateY(-3px); /* Elevation effect. */
+    transition: outline 0.15s ease-out, outline-offset 0.15s ease-out, box-shadow 0.15s ease-out, transform 0.15s ease-out;
+}
+
+/* Style for the keyboard-"grabbed" element in ordering questions. */
+.keyboard-grabbed {
+    background-color: rgba(245, 158, 11, 0.15) !important; /* Warning background. */
+    border-color: var(--warning-color) !important;
+}
+
+/* Combination of focus and "grabbed". */
+.keyboard-grabbed.keyboard-focused {
+    outline-color: var(--warning-color) !important;
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.4), 0 6px 16px rgba(0,0,0,0.1) !important;
+}
+
+/* Focus style for hint toggle button. */
+.toggle-individual-hint-button.keyboard-focused {
+    box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.4) !important;
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    border-radius: var(--border-radius);
+    outline: none !important;
+}
+
+/* Focus style for action buttons (Evaluate/I don't know). */
+#action-buttons .btn.keyboard-focused {
+    outline: 3px solid var(--primary-color-light) !important;
+    outline-offset: 2px;
+    transform: scale(1.05); /* Slightly larger. */
+    box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.4), 0 4px 10px rgba(0,0,0,0.2) !important;
+}
+
+/* Style for active keyboard zone (e.g., word bank in sentence formation). */
+.keyboard-zone-active {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+/* Styles for native Anki play/replay buttons (visually enhances them). */
+.main-quiz-container .replay-button, .main-quiz-container .play-action {
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    border: none !important;
+    border-radius: 50% !important;
+    -webkit-tap-highlight-color: transparent !important;
+    width: 56px !important;
+    height: 56px !important;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07) !important;
+    transition: background-color 0.2s ease, transform 0.2s ease !important;
+    vertical-align: middle !important;
+    margin: 0 0.25em !important;
+    padding: 0 !important;
+    background-image: none !important;
+}
+
+/* Hides native Anki SVGs inside these buttons. */
+.main-quiz-container .replay-button svg, .main-quiz-container .play-action svg {
+    display: none !important;
+}
+
+/* Adds a custom play icon using a pseudo-element. */
+.main-quiz-container .replay-button::after, .main-quiz-container .play-action::after {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 28px;
+    background-color: white;
+    /* SVG play icon encoded in mask. */
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98c-.67-.43-1.54.05-1-1.54.84z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98c-.67-.43-1.54.05-1.54.84z'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+}
+
+/* Hover effect for Anki play buttons. */
+.main-quiz-container .replay-button:hover, .main-quiz-container .play-action:hover {
+    background-color: var(--primary-color-light) !important;
+    transform: scale(1.05) !important;
+}
+
+/* Hides native Anki text on these buttons. */
+.main-quiz-container .replay-button-text, .main-quiz-container .play-action .replay-button-text {
+    display: none !important;
+}
+
+/* Style for the left content of the matching row. */
+.matching-row-content .matching-row-left {
+    flex-grow: 1;
+}
+
+/* Style for matching feedback. */
+.matching-row-content .matching-feedback {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--border-light);
+}
+
+/* Night Mode for matching feedback border. */
+.nightMode .matching-row-content .matching-feedback, .night_mode .matching-row-content .matching-feedback {
+    border-left-color: var(--border-dark);
+}
+
+/* Style for incorrect user choice in matching. */
+.matching-feedback .user-choice-incorrect {
+    color: var(--danger-color);
+    background-color: rgba(239, 68, 68, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: line-through; /* Strikethrough the incorrect answer. */
+}
+
+/* Style for correct answer indicator arrow in matching. */
+.matching-feedback .correct-choice-arrow {
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+/* Style for correct answer text in matching. */
+.matching-feedback .correct-choice-text {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+/* Column layout styles for feedback (moved from original template). */
+.feedback-details {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--border-radius);
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-light);
+}
+
+.nightMode .feedback-details, .night_mode .feedback-details {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: var(--border-dark);
+}
+
+.feedback-details h6 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--light-text-muted);
+}
+
+.nightMode .feedback-details h6, .night_mode .feedback-details h6 {
+    color: var(--dark-text-muted);
+}
+
+@media (min-width: 768px) {
+    .feedback-columns-container {
+        display: flex;
+        gap: 1.25rem;
+    }
+    .feedback-subsection {
+        flex: 1;
+    }
+    .feedback-subsection + .feedback-subsection {
+        margin-top: 0;
+    }
+}
+
+/*
+================================================================================
+ SECTION 7: CARD ANIMATIONS AND TRANSITION EFFECTS
+================================================================================
+ Styles for the exit overlay and card animations
+ when reviewed (Again, Hard, Good).
+--------------------------------------------------------------------------------
+*/
+
+/* Transition for the main quiz container on exit. */
+.main-quiz-container {
+    transition: transform 0.25s ease-in, opacity 0.25s ease-in;
+}
+
+/* Overlay layer for exit effects. */
+#card-exit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Covers the entire viewport. */
+    height: 100vh;
+    background-color: transparent;
+    z-index: 1000;
+    pointer-events: none; /* Prevents it from intercepting clicks. */
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out, background-color 0.25s ease-in-out;
+}
+
+/* Exit animation for "Again" (card slides left, rotates, and fades). */
+body.exiting-again #card-exit-overlay {
+    background-color: rgba(239, 68, 68, 0.2); /* Translucent red color. */
+    opacity: 1;
+}
+body.exiting-again .main-quiz-container {
+    transform: translate(-80vw, 40vh) rotate(-25deg) scale(0.6);
+    opacity: 0;
+}
+
+/* Exit animation for "Hard" (card slides down and fades). */
+body.exiting-hard #card-exit-overlay {
+    background-color: rgba(245, 158, 11, 0.2); /* Translucent yellow color. */
+    opacity: 1;
+}
+body.exiting-hard .main-quiz-container {
+    transform: translateY(100vh) scale(0.7);
+    opacity: 0;
+}
+
+/* Exit animation for "Good" (card slides right, rotates, and fades). */
+body.exiting-good #card-exit-overlay {
+    background-color: rgba(16, 185, 129, 0.2); /* Translucent green color. */
+    opacity: 1;
+}
+body.exiting-good .main-quiz-container {
+    transform: translate(80vw, 40vh) rotate(25deg) scale(0.6);
+    opacity: 0;
+}
+
+/*
+================================================================================
+ SECTION 8: CURSOR HIDING LOGIC
+================================================================================
+ Class applied to the `html` element to hide the mouse cursor
+ after a period of inactivity.
+--------------------------------------------------------------------------------
+*/
+
+/* Styles for cursor hiding. */
+.cursor-idle, .cursor-idle * {
+    cursor: none !important; /* Hides the cursor for the element and all its descendants. */
+}
+
+/* Prevent cursor flickering during initial load. */
+html {
+    cursor: auto; /* Ensures the cursor is visible by default on load. */
+}

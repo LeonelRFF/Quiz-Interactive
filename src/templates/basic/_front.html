@@ -1,0 +1,34 @@
+<!--
+    Template Shell for the Front of the 'Basic' Card Type.
+    This file defines the core HTML structure.
+    The build script will inject styles and scripts into the placeholders below.
+-->
+<div class="main-quiz-container">
+    <!-- Timer Bar -->
+    <div class="timer-bar-container">
+        <div class="timer-bar-fill" id="timer-bar"></div>
+    </div>
+
+    <!-- Quiz Container (Dynamically Rendered by the Script) -->
+    <div id="quiz-container-anki-front"></div>
+    
+    <!-- Hidden Data Container for Anki Fields -->
+    <div id="anki-data-container" style="display:none">
+        <div id="anki-field-pregunta">{{Question}}</div>
+        <div id="anki-field-opciones">{{Options}}</div>
+        <div id="anki-field-respuesta_correcta">{{Correct_Answer}}</div>
+        <div id="anki-field-explicacion">{{Explanation}}</div>
+        <div id="anki-field-pistas">{{Hints}}</div>
+        <div id="anki-field-tags">{{Tags}}</div>
+    </div>
+</div>
+
+<!-- Build-time Placeholder for CSS -->
+<style>
+    <!-- %%STYLES%% -->
+</style>
+
+<!-- Build-time Placeholder for JavaScript -->
+<script id="anki-card-script">
+    <!-- %%SCRIPT%% -->
+</script>

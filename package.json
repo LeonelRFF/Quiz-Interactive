@@ -1,0 +1,15 @@
+{
+  "name": "quiz-interactive-anki-template",
+  "version": "1.0.0",
+  "description": "Un template para Anki moderno, potente y altamente personalizable.",
+  "scripts": {
+    "build:css": "sass src/scss/basic.scss:_build/basic/styling.css && sass src/scss/cloze.scss:_build/cloze/styling.css --style=compressed",
+    "build:py": "python build.py",
+    "build": "npm run build:css && npm run build:py"
+  },
+  "author": "Leonel Rodriguez",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "sass": "^1.89.2"
+  }
+}
