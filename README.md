@@ -264,6 +264,18 @@ Once you have the CSV output from the AI, use the browser extension mentioned be
 
 ## 📦 How to Install & Use
 
+### ⚠️ Important Requirement for Keyboard Navigation
+
+For the keyboard navigation features (using W, A, S, D, etc.) to work, you **must install the "Review Hotkeys" add-on** for Anki.
+
+1.  **Install the Add-on:**
+    - Go to the add-on page: [Review Hotkeys - Remap Review Buttons](https://ankiweb.net/shared/info/1762336370)
+    - Use the code **1762336370** in Anki's `Tools > Add-ons > Get Add-ons...` dialog.
+
+2.  **Configure the Add-on:**
+    - After installing, go to `Tools > Add-ons`, select "Review Hotkeys," and click `Config`.
+    - You need to **disable or clear** the default assignments for any keys you want to use within the template (like `W`, `A`, `S`, `D`, `Spacebar`, `Enter`). This prevents conflicts and allows the template's internal navigation to take control.
+
 ### For End-Users (Easy Install)
 
 The easiest way to install is to download the pre-packaged deck file:
@@ -293,10 +305,6 @@ This project uses Node.js and Python for its build process.
 
 The final compiled files will be generated in the `_build/` directory.
 
-
-## ❤️ Support This Project
-
-If you find this project useful, please consider giving it a ⭐️ star on GitHub! You can also support its continued development through a donation.
 
 ## ❤️ Support This Project
 
