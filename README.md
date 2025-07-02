@@ -290,7 +290,7 @@ For the keyboard navigation features (using W, A, S, D, etc.) to work, you **mus
 
 The easiest way to install is to download the pre-packaged deck file:
 
-1.  Go to the [**Releases Page**](https://github.com/tu-usuario/Quiz-Interactive/releases).
+1.  Go to the [**Releases Page**](https://github.com/LeonelRFF/Quiz-Interactive/releases).
 2.  Download the `Quiz_Interactive.apkg` file from the latest release.
 3.  Open Anki, go to `File > Import`, and select the downloaded `.apkg` file. This will add the card types and a sample deck to your collection.
 
