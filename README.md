@@ -1,12 +1,10 @@
 # 🚀 Quiz Interactive - Anki Template
 
-# 🚀 Quiz Interactive - Anki Template
-
 _A modern, powerful, and highly customizable Anki template designed to turn your study sessions into interactive experiences._
 
 ---
 
-[![Quiz Interactive for Anki - AI Powered Workflow](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID)
+![Crear Flashcards tipo quiz con IA en Anki Gratis - YouTube](https://www.youtube.com/watch?v=QZUXAYUEAis)
 
 **[Click here to watch the showcase video on YouTube]**
 
