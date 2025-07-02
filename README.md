@@ -21,6 +21,16 @@ Welcome to **Quiz Interactive**! This project provides a suite of advanced Anki 
 - **Full Keyboard Navigation:** A game-like experience using W, A, S, D, and Spacebar to navigate and answer.
 - **Modern & Responsive Design:** Flawless look and feel on both desktop and mobile, with automatic light and dark modes.
 
+### 🖼️ Easy Media Embedding
+
+Tired of complex HTML? This template introduces a simple, powerful syntax to embed media directly from your Anki collection. Just use the `![[...]]` format in any field.
+
+- **Audio:** `![[your_sound.mp3]]` will be converted into a full-featured audio player.
+- **Video:** `![[your_video.mp4]]` becomes an advanced video player.
+- **Images:** `![[your_image.png]]` will be displayed as a properly formatted image.
+
+This keeps your fields clean and makes adding rich media incredibly fast.
+
 ## 🤖 AI-Powered Content Generation (The "Magic" Workflow)
 
 A core feature of this project is the ability to generate content rapidly using AI. I have developed specific prompts that you can provide to Large Language Models (LLMs) to get a perfectly formatted CSV file.
