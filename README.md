@@ -4,8 +4,7 @@ _A modern, powerful, and highly customizable Anki template designed to turn your
 
 ---
 
-![Crear Flashcards tipo quiz con IA en Anki Gratis - YouTube](https://www.youtube.com/watch?v=QZUXAYUEAis)
-
+[![Crear Flashcards tipo quiz con IA en Anki Gratis](https://img.youtube.com/vi/QZUXAYUEAis/0.jpg)](https://www.youtube.com/watch?v=QZUXAYUEAis)git add .
 
 ---
 
