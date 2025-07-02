@@ -6,9 +6,6 @@ _A modern, powerful, and highly customizable Anki template designed to turn your
 
 ![Crear Flashcards tipo quiz con IA en Anki Gratis - YouTube](https://www.youtube.com/watch?v=QZUXAYUEAis)
 
-**[Click here to watch the showcase video on YouTube]**
-
-*(Instructions: Upload your video to YouTube. If the URL is `https://www.youtube.com/watch?v=AbC-123_xYz`, then `AbC-123_xYz` is your YOUTUBE_VIDEO_ID. Replace it in the two lines above.)*
 
 ---
 
