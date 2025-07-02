@@ -290,7 +290,7 @@ For the keyboard navigation features (using W, A, S, D, etc.) to work, you **mus
 
 The easiest way to install is to download the pre-packaged deck file:
 
-1.  Go to the [**Releases Page**](https://github.com/tu-usuario/Quiz-Interactive/releases).
+1.  Go to the [**Releases Page**](https://github.com/LeonelRFF/Quiz-Interactive/releases).
 2.  Download the `Quiz_Interactive.apkg` file from the latest release.
 3.  Open Anki, go to `File > Import`, and select the downloaded `.apkg` file. This will add the card types and a sample deck to your collection.
 
@@ -308,7 +308,7 @@ If you prefer to copy the code manually:
 
 This project uses Node.js and Python for its build process.
 
-1.  Clone the repository: `git clone https://github.com/tu-usuario/Quiz-Interactive.git`
+1.  Clone the repository: `git clone https://github.com/your-user/Quiz-Interactive.git`
 2.  Navigate into the directory: `cd Quiz-Interactive`
 3.  Install dependencies: `npm install`
 4.  Run the build script: `npm run build`
